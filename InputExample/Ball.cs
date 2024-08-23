@@ -6,6 +6,8 @@ namespace InputExample
 {
     public class Ball
     {
+        Random ranNumGenerator;
+
         /// <summary>
         /// The game this ball is a part of
         /// </summary>
@@ -34,7 +36,8 @@ namespace InputExample
         public Ball(Game game, Color color) 
         {
             this.game = game;
-            this.color = color;           
+            this.color = color;
+            ranNumGenerator = new();
         }
 
         /// <summary>
@@ -54,6 +57,12 @@ namespace InputExample
         {
             if (texture is null) throw new InvalidOperationException("Texture must be loaded to render");
             spriteBatch.Draw(texture, Position, color);
+        }
+
+        public void Warp() 
+        {
+            Position = new Vector2((float)ranNumGenerator.NextDouble() * game.GraphicsDevice.Viewport.Width, (float)ranNumGenerator.NextDouble() * game.GraphicsDevice.Viewport.Height);
+
         }
     }
 }
