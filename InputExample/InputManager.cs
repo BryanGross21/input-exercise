@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Common;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -22,12 +23,12 @@ namespace InputExample
 		/// <summary>
 		/// Current direction of position
 		/// </summary>
-		public Vector2 Direction { get; private set; } 
+		public Vector2[] Directions { get; private set; } = new Vector2[3];
 
 		/// <summary>
 		/// Process an input if a warp has been called
 		/// </summary>
-		public bool Warp { get; private set; }
+		public bool[] Warp { get; private set; } = new bool[3];
 
 		/// <summary>
 		/// Process an input to exit the game
@@ -47,53 +48,65 @@ namespace InputExample
 
 			#region Direction Input
 
-			Direction = Vector2.Zero;
+			int i = 0;
+			foreach (Vector2 vector in Directions)
+			{
+				Directions[i] = Vector2.Zero;
+				i++;
+			}
 			//Get position from Keyboard
 			if (currentKeyboardState.IsKeyDown(Keys.Left) || currentKeyboardState.IsKeyDown(Keys.A))
 			{
-				Direction += new Vector2(-100 * (float)gameTime.ElapsedGameTime.TotalSeconds, 0);
+				Directions[0] += new Vector2(-100 * (float)gameTime.ElapsedGameTime.TotalSeconds, 0);
 			}
 			if (currentKeyboardState.IsKeyDown(Keys.Right) || currentKeyboardState.IsKeyDown(Keys.D))
 			{
-				Direction += new Vector2(100 * (float)gameTime.ElapsedGameTime.TotalSeconds, 0);
+				Directions[0] += new Vector2(100 * (float)gameTime.ElapsedGameTime.TotalSeconds, 0);
 			}
 			if (currentKeyboardState.IsKeyDown(Keys.Up) || currentKeyboardState.IsKeyDown(Keys.W))
 			{
-				Direction += new Vector2(0, -100 * (float)gameTime.ElapsedGameTime.TotalSeconds);
+				Directions[0] += new Vector2(0, -100 * (float)gameTime.ElapsedGameTime.TotalSeconds);
 			}
 			if (currentKeyboardState.IsKeyDown(Keys.Down) || currentKeyboardState.IsKeyDown(Keys.S))
 			{
-				Direction += new Vector2(0, 100 * (float)gameTime.ElapsedGameTime.TotalSeconds);
+				Directions[0] += new Vector2(0, 100 * (float)gameTime.ElapsedGameTime.TotalSeconds);
 			}
 
-			
+			Directions[1] = new Vector2(currentMouseState.X, currentMouseState.Y);
+
 			if (currentGamepadState.DPad.Left == ButtonState.Pressed)
 			{
-				Direction += new Vector2(-100 * (float)gameTime.ElapsedGameTime.TotalSeconds, 0);
+				Directions[2] += new Vector2(-100 * (float)gameTime.ElapsedGameTime.TotalSeconds, 0);
 			}
 
 
-			Direction += currentGamepadState.ThumbSticks.Right * 100 * (float)gameTime.ElapsedGameTime.TotalSeconds;
-			
+			Directions[2] += currentGamepadState.ThumbSticks.Right * 100 * (float)gameTime.ElapsedGameTime.TotalSeconds;
+
 			#endregion
 
 			#region Warp Input
-			Warp = false;
+			int j = 0;
+			foreach (bool type in Warp) 
+			{
+				Warp[j] = false;
+				j++;
+			}
 
 			if (currentKeyboardState.IsKeyDown(Keys.Space) && pastKeyboardState.IsKeyUp(Keys.Space))
 			{
-				Warp = true;
-			}
-
-			if (currentGamepadState.IsButtonDown(Buttons.A) && priorGamepadState.IsButtonUp(Buttons.A))
-			{
-				Warp = true;
+				Warp[0] = true;
 			}
 
 			if (currentMouseState.LeftButton == ButtonState.Pressed && PriorMouseState.LeftButton == ButtonState.Released)
 			{
-				Warp = true;
+				Warp[1] = true;
 			}
+
+			if (currentGamepadState.IsButtonDown(Buttons.A) && priorGamepadState.IsButtonUp(Buttons.A))
+			{
+				Warp[2] = true;
+			}
+
 
 			#endregion
 

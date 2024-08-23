@@ -64,11 +64,25 @@ namespace InputExample
                 Exit();
             }
 
-            balls[0].Position += inputManager.Direction;
+            balls[0].Position += inputManager.Directions[0];
 
-            if (inputManager.Warp) 
+            balls[1].Position = inputManager.Directions[1];
+
+            balls[2].Position += inputManager.Directions[2];
+
+            if (inputManager.Warp[0]) 
             {
                 balls[0].Warp();
+            }
+
+            if (inputManager.Warp[1]) 
+            {
+                balls[1].Warp();
+            }
+
+            if (inputManager.Warp[2]) 
+            {
+                balls[2].Warp();
             }
 
 			base.Update(gameTime);
